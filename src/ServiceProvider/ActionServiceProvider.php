@@ -3,7 +3,6 @@
 namespace RCatlin\ContentApi\ServiceProvider;
 
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\UnitOfWork;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use RCatlin\ContentApi\Action;
 use RCatlin\ContentApi\EntityHydrator;
@@ -13,6 +12,7 @@ class ActionServiceProvider extends AbstractServiceProvider
 {
     protected $provides = [
         Action\EntityCreateAction::class,
+        Action\EntityRetrieveAction::class, 
         Action\PingAction::class,
     ];
 
@@ -24,6 +24,13 @@ class ActionServiceProvider extends AbstractServiceProvider
             $entityTransformer = $this->container->get(EntityTransformer::class);
 
             return new Action\EntityCreateAction($entityHydrator, $entityManager, $entityTransformer);
+        });
+
+        $this->container->share(Action\EntityRetrieveAction::class, function () {
+            $entityManager = $this->container->get(EntityManager::class);
+            $entityTransformer = $this->container->get(EntityTransformer::class);
+
+            return new Action\EntityRetrieveAction($entityManager, $entityTransformer);
         });
 
         $this->container->share(Action\PingAction::class, function () {

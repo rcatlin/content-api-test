@@ -3,7 +3,7 @@
 namespace RCatlin\ContentApi\Middleware;
 
 use League\Pipeline\StageInterface;
-use RCatlin\ContentApi\Action\EntityCreateAction;
+use RCatlin\ContentApi\Action;
 use RCatlin\ContentApi\Action\PingAction;
 use Refinery29\Piston\Middleware\Payload;
 use Refinery29\Piston\Piston;
@@ -24,7 +24,8 @@ class Route implements StageInterface
         for ($path = 'api', $i = 0; $i < self::MAX_ENTITY_URL_PARTS; $i++) {
             $path .= '/{part' . $i . '}';
 
-            $subject->post($path, EntityCreateAction::class . '::create');
+            $subject->get($path . '/{id:number}', Action\EntityRetrieveAction::class . '::retrieve');
+            $subject->post($path, Action\EntityCreateAction::class . '::create');
         }
 
         return $payload;

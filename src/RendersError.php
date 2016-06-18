@@ -71,4 +71,9 @@ trait RendersError
 
         return $this->renderErrors($response, StatusCode::BAD_REQUEST, $errors);
     }
+
+    public function renderPathError(ApiResponse $response)
+    {
+        return $this->renderError($response, StatusCode::NOT_FOUND, 'Entity path not found.', 0);
+    }
 }

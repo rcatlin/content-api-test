@@ -2,6 +2,7 @@
 
 namespace RCatlin\ContentApi\Action;
 
+use Assert\InvalidArgumentException;
 use Doctrine\ORM\EntityManager;
 use RCatlin\ContentApi\EntityClassName;
 use RCatlin\ContentApi\EntityHydrator;
@@ -40,14 +41,20 @@ class EntityCreateAction
 
     public function create(Request $request, ApiResponse $response, array $vars = [])
     {
-        $className = EntityClassName::renderFromParts($vars);
+        // Find Entity Class Name
+        try {
+            $className = EntityClassName::renderFromParts($vars);
+        } catch (InvalidArgumentException $exception) {
+            return $this->renderPathError($response);
+        }
 
+        // Get Request Contents
         $content = json_decode($request->getBody()->getContents(), true);
-
         if (!is_array($content)) {
             return $this->renderError($response, StatusCode::BAD_REQUEST, 'Invalid Request JSON.', 0);
         }
 
+        // Hydrate
         try {
             $entity = $this->entityHydrator->hydrate($className, $content);
         } catch (HydrationFailedException $exception) {
@@ -56,6 +63,7 @@ class EntityCreateAction
             return $this->renderError($response, StatusCode::INTERNAL_SERVER_ERROR, $exception->getMessage(), 0);
         }
 
+        // Persist
         try {
             $this->entityManager->persist($entity);
             $this->entityManager->flush($entity);
@@ -64,6 +72,7 @@ class EntityCreateAction
             return $this->renderError($response, StatusCode::INTERNAL_SERVER_ERROR, $exception->getMessage(), 0);
         }
 
+        // Transform Entity
         return $this->renderEntity($response, StatusCode::ACCEPTED, $entity);
     }
 }

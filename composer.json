@@ -1,0 +1,16 @@
+{
+    "name": "rcatlin/content-api-test",
+    "authors": [
+        {
+            "name": "Ryan Catlin",
+            "email": "ryan.catlin@gmail.com"
+        }
+    ],
+    "require": {
+        "doctrine/orm": "^2.5",
+        "refinery29/piston": "^1.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.4"
+    }
+}

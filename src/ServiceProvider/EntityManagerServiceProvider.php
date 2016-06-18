@@ -3,14 +3,18 @@
 namespace RCatlin\ContentApi\ServiceProvider;
 
 use Doctrine\Common\Cache\ArrayCache;
+use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
 use League\Container\ServiceProvider\AbstractServiceProvider;
+use Symfony\Component\Console\Helper\HelperSet;
 
 class EntityManagerServiceProvider extends AbstractServiceProvider
 {
     protected $provides = [
         EntityManager::class,
+        HelperSet::class,
     ];
 
     public function register()
@@ -42,6 +46,16 @@ class EntityManagerServiceProvider extends AbstractServiceProvider
             $config->setAutoGenerateProxyClasses(true);
 
             return EntityManager::create($params, $config);
+        });
+
+        $this->container->share(HelperSet::class, function () {
+            /** @var EntityManager $entityManager */
+            $entityManager = $this->container->get(EntityManager::class);
+
+            return new HelperSet([
+                'db' => new ConnectionHelper($entityManager->getConnection()),
+                'em' => new EntityManagerHelper($entityManager),
+            ]);
         });
     }
 }

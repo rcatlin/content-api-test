@@ -1,4 +1,4 @@
-.PHONY: integration test db migrate
+.PHONY: integration test db migrate composer start-dev
 
 migrate:
 	./bin/console migrations:migrate --no-interaction
@@ -14,3 +14,7 @@ test: integration
 
 composer:
 	composer install
+
+start-dev:
+	php -S localhost:8000 -t public
+

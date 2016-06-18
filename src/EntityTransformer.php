@@ -2,6 +2,7 @@
 
 namespace RCatlin\ContentApi;
 
+use Assert\Assertion;
 use Doctrine\ORM\EntityManager;
 
 class EntityTransformer
@@ -16,5 +17,23 @@ class EntityTransformer
         $this->entityManager = $entityManager;
     }
 
-    public function serialize()
+    /**
+     * @param object $entity
+     *
+     * @return array
+     */
+    public function transform($entity)
+    {
+        Assertion::isObject($entity);
+
+        $metaData = $this->entityManager->getClassMetadata(get_class($entity));
+
+        $transformed = [];
+
+        foreach ($metaData->getFieldNames() as $fieldName) {
+            $transformed[$fieldName] = $metaData->getFieldValue($entity, $fieldName);
+        }
+
+        return $transformed;
+    }
 }

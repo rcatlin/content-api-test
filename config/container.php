@@ -9,8 +9,10 @@ $container = new Container();
 
 $container->addServiceProvider(ServiceProvider\ActionServiceProvider::class);
 $container->addServiceProvider(ServiceProvider\ApplicationServiceProvider::class);
+$container->addServiceProvider(ServiceProvider\HydratorServiceProvider::class);
 $container->addServiceProvider(ServiceProvider\EntityManagerServiceProvider::class);
 $container->addServiceProvider(ServiceProvider\MiddlewareServiceProvider::class);
 $container->addServiceProvider(ServiceProvider\MigrationServiceProvider::class);
+$container->addServiceProvider(ServiceProvider\TransformerServiceProvider::class);
 
 return $container;

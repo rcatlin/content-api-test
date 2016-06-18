@@ -4,7 +4,7 @@ namespace RCatlin\ContentApi;
 
 abstract class EntityClassName
 {
-    public function renderFcqnFromParts(array $parts)
+    public static function renderFromParts(array $parts)
     {
         $partialPath = implode('\\', array_map(function ($part) {
             return ucfirst($part);

@@ -7,6 +7,7 @@ use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
+use Doctrine\ORM\UnitOfWork;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use Symfony\Component\Console\Helper\HelperSet;
 
@@ -15,6 +16,7 @@ class EntityManagerServiceProvider extends AbstractServiceProvider
     protected $provides = [
         EntityManager::class,
         HelperSet::class,
+        UnitOfWork::class,
     ];
 
     public function register()
@@ -56,6 +58,13 @@ class EntityManagerServiceProvider extends AbstractServiceProvider
                 'db' => new ConnectionHelper($entityManager->getConnection()),
                 'em' => new EntityManagerHelper($entityManager),
             ]);
+        });
+
+        $this->container->share(UnitOfWork::class, function () {
+            /** @var EntityManager $entityManager */
+            $entityManager = $this->container->get(EntityManager::class);
+
+            return $entityManager->getUnitOfWork();
         });
     }
 }

@@ -24,7 +24,7 @@ class EntityManagerServiceProvider extends AbstractServiceProvider
                 'driver' => 'pdo_sqlite',
                 'user' => 'root',
                 'password' => '',
-                'path' => __DIR__ . '/../../data',
+                'path' => __DIR__ . '/../../data/db.sqlite',
                 'memory' => false,
             ];
 

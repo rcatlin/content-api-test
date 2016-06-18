@@ -10,6 +10,21 @@ $helperSet->set(new \Symfony\Component\Console\Helper\QuestionHelper(), 'dialog'
 
 $console->setHelperSet($helperSet);
 
+$migrationCommands = [
+    new Doctrine\DBAL\Migrations\Tools\Console\Command\DiffCommand(),
+    new Doctrine\DBAL\Migrations\Tools\Console\Command\ExecuteCommand(),
+    new Doctrine\DBAL\Migrations\Tools\Console\Command\GenerateCommand(),
+    new Doctrine\DBAL\Migrations\Tools\Console\Command\LatestCommand(),
+    new Doctrine\DBAL\Migrations\Tools\Console\Command\MigrateCommand(),
+    new Doctrine\DBAL\Migrations\Tools\Console\Command\StatusCommand(),
+    new Doctrine\DBAL\Migrations\Tools\Console\Command\VersionCommand(),
+];
+
+$migrationConfiguration = $container->get(Doctrine\DBAL\Migrations\Configuration\Configuration::class);
+foreach ($migrationCommands as $command) {
+    $command->setMigrationConfiguration($migrationConfiguration);
+}
+
 $commands = [
     new Doctrine\DBAL\Tools\Console\Command\ImportCommand(),
     new Doctrine\DBAL\Tools\Console\Command\ReservedWordsCommand(),
@@ -29,17 +44,9 @@ $commands = [
     new \Doctrine\ORM\Tools\Console\Command\SchemaTool\CreateCommand(),
     new \Doctrine\ORM\Tools\Console\Command\SchemaTool\DropCommand(),
     new \Doctrine\ORM\Tools\Console\Command\SchemaTool\UpdateCommand(),
-
-    new Doctrine\DBAL\Migrations\Tools\Console\Command\DiffCommand(),
-    new Doctrine\DBAL\Migrations\Tools\Console\Command\ExecuteCommand(),
-    new Doctrine\DBAL\Migrations\Tools\Console\Command\GenerateCommand(),
-    new Doctrine\DBAL\Migrations\Tools\Console\Command\LatestCommand(),
-    new Doctrine\DBAL\Migrations\Tools\Console\Command\MigrateCommand(),
-    new Doctrine\DBAL\Migrations\Tools\Console\Command\StatusCommand(),
-    new Doctrine\DBAL\Migrations\Tools\Console\Command\VersionCommand(),
 ];
 
-$console->addCommands($commands);
+$console->addCommands(array_merge($commands, $migrationCommands));
 
 $console->run();
 

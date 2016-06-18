@@ -31,9 +31,7 @@ trait RendersError
             ])
         );
 
-        $response->setStatusCode($statusCode);
-
-        return $response;
+        return $response->withStatus($statusCode);
     }
 
     /**
@@ -52,9 +50,7 @@ trait RendersError
             ResourceFactory::errorCollection($errors)
         );
 
-        $response->setStatusCode($statusCode);
-
-        return $response;
+        return $response->withStatus($statusCode);
     }
 
     public function renderHydrationErrors(ApiResponse $response, HydrationFailedException $exception)
@@ -72,6 +68,17 @@ trait RendersError
         return $this->renderErrors($response, StatusCode::BAD_REQUEST, $errors);
     }
 
+    public function renderEntityNotFound(ApiResponse $response, $id)
+    {
+        Assertion::integer($id);
+
+        return $this->renderError(
+            $response,
+            StatusCode::NOT_FOUND,
+            'Entity with id "' . $id . '" was not found."',
+            0
+        );
+    }
     public function renderPathError(ApiResponse $response)
     {
         return $this->renderError($response, StatusCode::NOT_FOUND, 'Entity path not found.', 0);

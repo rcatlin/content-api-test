@@ -36,8 +36,6 @@ trait RendersEntity
             )
         );
 
-        $response->setStatusCode($statusCode);
-
-        return $response;
+        return $response->withStatus($statusCode);
     }
 }

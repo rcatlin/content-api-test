@@ -12,7 +12,8 @@ class ActionServiceProvider extends AbstractServiceProvider
 {
     protected $provides = [
         Action\EntityCreateAction::class,
-        Action\EntityRetrieveAction::class, 
+        Action\EntityDeleteAction::class,
+        Action\EntityRetrieveAction::class,
         Action\PingAction::class,
     ];
 
@@ -24,6 +25,12 @@ class ActionServiceProvider extends AbstractServiceProvider
             $entityTransformer = $this->container->get(EntityTransformer::class);
 
             return new Action\EntityCreateAction($entityHydrator, $entityManager, $entityTransformer);
+        });
+
+        $this->container->share(Action\EntityDeleteAction::class, function () {
+            $entityManager = $this->container->get(EntityManager::class);
+
+            return new Action\EntityDeleteAction($entityManager);
         });
 
         $this->container->share(Action\EntityRetrieveAction::class, function () {

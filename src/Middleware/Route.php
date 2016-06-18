@@ -26,6 +26,7 @@ class Route implements StageInterface
 
             $subject->get($path . '/{id:number}', Action\EntityRetrieveAction::class . '::retrieve');
             $subject->post($path, Action\EntityCreateAction::class . '::create');
+            $subject->delete($path . '/{id:number}', Action\EntityDeleteAction::class . '::delete');
         }
 
         return $payload;

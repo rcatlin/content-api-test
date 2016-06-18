@@ -5,14 +5,13 @@ namespace RCatlin\ContentApi\Action;
 use Assert\InvalidArgumentException;
 use Doctrine\ORM\EntityManager;
 use RCatlin\ContentApi\EntityClassName;
-use RCatlin\ContentApi\EntityTransformer;
 use RCatlin\ContentApi\RendersEntity;
 use RCatlin\ContentApi\RendersError;
 use Refinery29\Piston\ApiResponse;
 use Refinery29\Piston\Request;
 use Teapot\StatusCode;
 
-class EntityRetrieveAction
+class EntityDeleteAction
 {
     use RendersEntity;
     use RendersError;
@@ -22,13 +21,12 @@ class EntityRetrieveAction
      */
     private $entityManager;
 
-    public function __construct(EntityManager $entityManager, EntityTransformer $entityTransformer)
+    public function __construct(EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
-        $this->setEntityTransformer($entityTransformer);
     }
 
-    public function retrieve(Request $request, ApiResponse $response, array $vars = [])
+    public function delete(Request $request, ApiResponse $response, array $vars = [])
     {
         $id = intval($vars['id']);
 
@@ -40,12 +38,25 @@ class EntityRetrieveAction
             return $this->renderPathError($response);
         }
 
+
         $entity = $this->entityManager->find($className, $id);
 
         if ($entity === null) {
             return $this->renderEntityNotFound($response, $id);
         }
 
-        return $this->renderEntity($response, StatusCode::OK, $entity);
+        try {
+            $this->entityManager->remove($entity);
+            $this->entityManager->flush();
+        } catch (\Exception $exception) {
+            return $this->renderError(
+                $response,
+                StatusCode::INTERNAL_SERVER_ERROR,
+                'Error occurred deleting Resource.',
+                0
+            );
+        }
+
+        return $response->withStatus(StatusCode::ACCEPTED);
     }
 }

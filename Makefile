@@ -11,3 +11,6 @@ integration:
 	vendor/bin/phpunit --config=test/Integration/phpunit.xml
 
 test: integration
+
+composer:
+	composer install

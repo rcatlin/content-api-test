@@ -4,6 +4,7 @@ migrate:
 	./bin/console migrations:migrate --no-interaction
 
 db:
+	mkdir -p data
 	touch data/db.sqlite
 	make migrate
 

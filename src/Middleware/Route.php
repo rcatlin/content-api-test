@@ -24,9 +24,12 @@ class Route implements StageInterface
         for ($path = 'api', $i = 0; $i < self::MAX_ENTITY_URL_PARTS; $i++) {
             $path .= '/{part' . $i . '}';
 
-            $subject->get($path . '/{id:number}', Action\EntityRetrieveAction::class . '::retrieve');
+            $withNumericId = '/{id:number}';
+
+            $subject->delete($path . $withNumericId, Action\EntityDeleteAction::class . '::delete');
+            $subject->get($path . $withNumericId, Action\EntityRetrieveAction::class . '::retrieve');
             $subject->post($path, Action\EntityCreateAction::class . '::create');
-            $subject->delete($path . '/{id:number}', Action\EntityDeleteAction::class . '::delete');
+            $subject->patch($path . $withNumericId, Action\EntityPartialUpdateAction::class . '::update');
         }
 
         return $payload;

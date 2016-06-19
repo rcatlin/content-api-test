@@ -14,5 +14,6 @@ $container->addServiceProvider(ServiceProvider\EntityManagerServiceProvider::cla
 $container->addServiceProvider(ServiceProvider\MiddlewareServiceProvider::class);
 $container->addServiceProvider(ServiceProvider\MigrationServiceProvider::class);
 $container->addServiceProvider(ServiceProvider\TransformerServiceProvider::class);
+$container->addServiceProvider(ServiceProvider\UpdaterServiceProvider::class);
 
 return $container;

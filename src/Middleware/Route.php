@@ -28,8 +28,9 @@ class Route implements StageInterface
 
             $subject->delete($path . $withNumericId, Action\EntityDeleteAction::class . '::delete');
             $subject->get($path . $withNumericId, Action\EntityRetrieveAction::class . '::retrieve');
+            $subject->patch($path . $withNumericId, Action\EntityPartialUpdateAction::class . '::partial');
             $subject->post($path, Action\EntityCreateAction::class . '::create');
-            $subject->patch($path . $withNumericId, Action\EntityPartialUpdateAction::class . '::update');
+            $subject->put($path . $withNumericId, Action\EntityUpdateAction::class . '::update');
         }
 
         return $payload;

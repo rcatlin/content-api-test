@@ -14,7 +14,7 @@ use Refinery29\Piston\ApiResponse;
 use Refinery29\Piston\Request;
 use Teapot\StatusCode;
 
-class EntityPartialUpdateAction
+class EntityUpdateAction
 {
     use RendersEntity;
     use RendersError;
@@ -39,7 +39,7 @@ class EntityPartialUpdateAction
         $this->setEntityTransformer($entityTransformer);
     }
 
-    public function partial(Request $request, ApiResponse $response, array $vars = [])
+    public function update(Request $request, ApiResponse $response, array $vars = [])
     {
         $id = $vars['id'];
 
@@ -66,7 +66,7 @@ class EntityPartialUpdateAction
 
         // Update
         try {
-            $entity = $this->entityUpdater->partial($entity, $content);
+            $entity = $this->entityUpdater->update($entity, $content);
         } catch (UpdateFailedException $exception) {
             return $this->renderUpdateErrors($response, $exception);
         } catch (\Exception $exception) {

@@ -9,6 +9,8 @@ use RCatlin\ContentApi\Exception\HydrationFailedException;
 
 class EntityHydrator
 {
+    use ValidatesFieldType;
+
     const VALID = 0;
     const MISSING_REQUIRED = 1;
     const INVALID = 2;
@@ -82,18 +84,8 @@ class EntityHydrator
 
         $value = $data[$fieldName];
 
-        try {
-            switch ($fieldMapping['type']) {
-                case 'string':
-                    Assertion::string($value);
-                    break;
-                case 'integer':
-                    Assertion::integer($value);
-                    break;
-                default:
-                    return self::VALID;
-            }
-        } catch (InvalidArgumentException $exception) {
+        $valid = $this->validateFieldType($fieldMapping['type'], $value);
+        if (!$valid) {
             return self::INVALID;
         }
 

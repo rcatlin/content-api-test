@@ -4,6 +4,7 @@ namespace RCatlin\ContentApi;
 
 use Assert\Assertion;
 use RCatlin\ContentApi\Exception\HydrationFailedException;
+use RCatlin\ContentApi\Exception\UpdateFailedException;
 use Refinery29\ApiOutput\Resource\Error\Error;
 use Refinery29\ApiOutput\Resource\ResourceFactory;
 use Refinery29\Piston\ApiResponse;
@@ -82,5 +83,20 @@ trait RendersError
     public function renderPathError(ApiResponse $response)
     {
         return $this->renderError($response, StatusCode::NOT_FOUND, 'Entity path not found.', 0);
+    }
+
+    public function renderUpdateErrors(ApiResponse $response, UpdateFailedException $exception)
+    {
+        $errors = [];
+
+        foreach ($exception->getInvalidFieldNames() as $invalidFieldName) {
+            $errors[] = ResourceFactory::error('Invalid field: ' . $invalidFieldName, 0);
+        }
+
+        foreach ($exception->getMissingRequiredFieldNames() as $missingRequiredFieldName) {
+            $errors[] = ResourceFactory::error('Missing required field: ' . $missingRequiredFieldName, 0);
+        }
+
+        return $this->renderErrors($response, StatusCode::BAD_REQUEST, $errors);
     }
 }

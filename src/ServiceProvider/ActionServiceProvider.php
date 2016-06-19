@@ -16,6 +16,7 @@ class ActionServiceProvider extends AbstractServiceProvider
         Action\EntityDeleteAction::class,
         Action\EntityPartialUpdateAction::class,
         Action\EntityRetrieveAction::class,
+        Action\EntityUpdateAction::class,
         Action\PingAction::class,
     ];
 
@@ -48,6 +49,14 @@ class ActionServiceProvider extends AbstractServiceProvider
             $entityTransformer = $this->container->get(EntityTransformer::class);
 
             return new Action\EntityPartialUpdateAction($entityUpdater, $entityManager, $entityTransformer);
+        });
+
+        $this->container->share(Action\EntityUpdateAction::class, function () {
+            $entityUpdater = $this->container->get(EntityUpdater::class);
+            $entityManager = $this->container->get(EntityManager::class);
+            $entityTransformer = $this->container->get(EntityTransformer::class);
+
+            return new Action\EntityUpdateAction($entityUpdater, $entityManager, $entityTransformer);
         });
 
         $this->container->share(Action\PingAction::class, function () {
